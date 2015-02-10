@@ -1,3 +1,4 @@
+
 COPY social_flow
 FROM '/Users/gordo/missourian_analytics/data/Feb12to15_feb_09.csv'
 WITH CSV HEADER NULL '';

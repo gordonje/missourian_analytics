@@ -1,3 +1,4 @@
+
 ALTER TABLE social_flow 
 ADD COLUMN word_count2 INT;
 

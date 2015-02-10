@@ -1,3 +1,4 @@
+
 CREATE TABLE social_flow (
           Account_Name VARCHAR(255)
         , Account_Type VARCHAR(255)

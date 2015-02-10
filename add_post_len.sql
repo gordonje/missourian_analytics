@@ -1,3 +1,4 @@
+
 ALTER TABLE social_flow 
 ADD COLUMN post_length INT;
 
