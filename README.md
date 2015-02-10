@@ -3,7 +3,11 @@ A repo for investigating web and social media analytics collected by the Columbi
 
 For starters, we need to set up a local PostgreSQL database:
 
-Then open a database client (e.g., Navicat), connect to the database, then [create](https://github.com/gordonje/missourian_analytics/blob/master/create_social_flow.sql) and [load](https://github.com/gordonje/missourian_analytics/blob/master/load_social_flow.sql) social flow data.
+	$ psql
+	# CREATE DATABASE [db_name];
+	# \q
+
+Then open a database client (e.g., Navicat), connect to new the database, then [create](https://github.com/gordonje/missourian_analytics/blob/master/create_social_flow.sql) and [load](https://github.com/gordonje/missourian_analytics/blob/master/load_social_flow.sql) social flow data.
 
 Now we're ready to start adding columns and setting their values:
 
