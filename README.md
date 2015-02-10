@@ -1,7 +1,9 @@
 # missourian_analytics
 A repo for investigating web and social media analytics collected by the Columbia Missourian.
 
-For starters, we need to set up a local PostgreSQL database for the command line:
+-----------------
+
+For starters, we need to set up a local PostgreSQL database from the command line:
 
 	$ psql
 	# CREATE DATABASE [db_name];
@@ -11,7 +13,7 @@ Then open a database client (e.g., Navicat), connect to new the database, then [
 
 Now we're ready to start adding columns and setting their values:
 
-*	[post_length](https://github.com/gordonje/missourian_analytics/blob/master/add_post_len.sql): The number of characters in the message field, which is the most precise way of measuring message length.
+*	[post_length](https://github.com/gordonje/missourian_analytics/blob/master/add_post_len.sql): The number of characters in the message field, the most precise way of measuring message length.
 * 	[word_count](https://github.com/gordonje/missourian_analytics/blob/master/add_word_count.sql): The number of words in the message field, which is a less precise (though perhaps more meaningful?) way of measuring message length.
 *	[weekday](https://github.com/gordonje/missourian_analytics/blob/master/add_day_of_week.sql): The day of week when the message was posted.
 
