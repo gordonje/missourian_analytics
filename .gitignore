@@ -52,3 +52,7 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Added by JG
+.DS_Store
+data/*
