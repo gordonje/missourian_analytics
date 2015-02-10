@@ -1,7 +1,7 @@
 # missourian_analytics
 A repo for investigating web and social media analytics collected by the Columbia Missourian.
 
-For starters, we need to set up a local PostgreSQL database:
+For starters, we need to set up a local PostgreSQL database for the command line:
 
 	$ psql
 	# CREATE DATABASE [db_name];
