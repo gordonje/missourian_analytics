@@ -15,9 +15,12 @@ Now we're ready to start adding columns and setting their values:
 
 *	[post_length](https://github.com/gordonje/missourian_analytics/blob/master/add_post_len.sql): The number of characters in the message field, the most precise way of measuring message length.
 * 	[word_count](https://github.com/gordonje/missourian_analytics/blob/master/add_word_count.sql): The number of words in the message field, which is a less precise (though perhaps more meaningful?) way of measuring message length.
-*	[hash_tag_count](https://github.com/gordonje/missourian_analytics/blob/master/add_hash_tag_count.sql): The number of #hash_tags in the message field.
-*	[at_tag_count](https://github.com/gordonje/missourian_analytics/blob/master/add_at_tag_count.sql): The number of "at_tags" (e.g., @MayorMcDavid) in the message field.
 *	[weekday](https://github.com/gordonje/missourian_analytics/blob/master/add_day_of_week.sql): The day of week when the message was posted.
+
+We can also create some relational tables:
+
+*	[hash_tags](https://github.com/gordonje/missourian_analytics/blob/master/add_hash_tag_count.sql): Contains records of #hash_tags and the id of each message in which that #hash_tag is included. Using this table, we can also add a hash_tag_count column to the primary table.
+*	[at_tags](https://github.com/gordonje/missourian_analytics/blob/master/add_at_tag_count.sql): Contains records of "at_tags" (e.g., @MayorMcDavid) and the id of each message in which that at_tag is included. And again, we can add an at_tags_count column to the primary table.
 
 Other columns we might consider adding:
 
