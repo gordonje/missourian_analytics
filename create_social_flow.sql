@@ -1,5 +1,5 @@
 
-CREATE TABLE social_flow (
+CREATE TABLE social_flow ( 
           Account_Name VARCHAR(255)
         , Account_Type VARCHAR(255)
         , Created_By VARCHAR(255)
