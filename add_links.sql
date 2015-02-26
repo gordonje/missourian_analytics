@@ -1,7 +1,15 @@
 
 CREATE TABLE messages_links AS
-SELECT id as message_id, (regexp_matches(message, 'http://[\w./-]+'))[1] as link
+SELECT 
+          id as message_id
+        , (regexp_matches(message, 'http://[\w./-]+'))[1] as link
+        , FALSE as primary_link
 FROM social_flow;
+
+INSERT INTO messages_links (message_id, link, primary_link)
+SELECT id, link, TRUE
+FROM social_flow
+WHERE link IS NOT NULL;
 
 ALTER TABLE social_flow
 ADD COLUMN link_count INT DEFAULT 0;
