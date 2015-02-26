@@ -1,3 +1,4 @@
+
 ALTER TABLE social_flow
 ADD COLUMN has_question BOOLEAN DEFAULT FALSE;
 
