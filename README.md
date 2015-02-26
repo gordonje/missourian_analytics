@@ -23,7 +23,7 @@ Now we're ready to start adding columns and setting their values:
 
 We can also create some relational tables:
 
-*	[hash_tags](https://github.com/gordonje/missourian_analytics/blob/master/add_hash_tags.sql): Contains records of #hash_tags and the id of each message in which that #hash_tag is included. Using this table, we can also add a hash_tag_count column to the primary table.
+*	[hash_tags](https://github.com/gordonje/missourian_analytics/blob/master/add_hashtags.sql): Contains records of #hash_tags and the id of each message in which that #hash_tag is included. Using this table, we can also add a hash_tag_count column to the primary table.
 *	[handles](https://github.com/gordonje/missourian_analytics/blob/master/add_handles.sql): Contains records of @handles and the id of each message in which that @handle is included. And again, we can add an at_tags_count column to the primary table.
 *	[links](https://github.com/gordonje/missourian_analytics/blob/master/add_links.sql): Contains records of URLs and the id of each message in which that URL is included. Also added a links_count column to the primary table.
 
