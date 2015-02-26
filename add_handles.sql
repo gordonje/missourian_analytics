@@ -1,6 +1,6 @@
 
 CREATE TABLE messages_handles AS
-SELECT id as message_id, regexp_matches(message, '@\w+', 'g') as handle
+SELECT id as message_id, (regexp_matches(message, '@\w+'))[1] as handle
 FROM social_flow;
 
 ALTER TABLE social_flow

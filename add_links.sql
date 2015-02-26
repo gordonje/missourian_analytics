@@ -1,6 +1,6 @@
 
 CREATE TABLE messages_links AS
-SELECT id as message_id, regexp_matches(message, 'http://[\w./-]+', 'g') as link
+SELECT id as message_id, (regexp_matches(message, 'http://[\w./-]+'))[1] as link
 FROM social_flow;
 
 ALTER TABLE social_flow

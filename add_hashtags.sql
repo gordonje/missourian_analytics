@@ -1,6 +1,6 @@
 
 CREATE TABLE messages_hashtags AS
-SELECT id as message_id, regexp_matches(message, '#\w+', 'g') as hashtag
+SELECT id as message_id, (regexp_matches(message, '#\w+', 'g'))[1] as hashtag
 FROM social_flow;
 
 ALTER TABLE social_flow
@@ -14,3 +14,5 @@ FROM (
         GROUP BY 1
 ) as foo
 WHERE id = message_id;
+
+select sum(hashtag_count) from social_flow;
