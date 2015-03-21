@@ -55,5 +55,8 @@ target/
 
 # Added by JG
 .DS_Store
-data/*
-!data/README.md
+data/*.csv
+data/*.sql
+data/*.xlsx
+data/*.xls
+data/*.zip
