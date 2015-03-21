@@ -60,3 +60,4 @@ data/*.sql
 data/*.xlsx
 data/*.xls
 data/*.zip
+notes/*
