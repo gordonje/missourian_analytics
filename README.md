@@ -12,11 +12,11 @@ So our quantitative research methods group got to wondering: What might all this
 Set up
 ------
 
-We needed to put all relevant data that was potentially interesting to us in a single database so that it would be easier to run queries and statistical procedures. 
+We needed to put all relevant and potential interesting data that was potentially in a single database so that it would be easier to run queries and statistical procedures. 
 
-In terms of database managers, my current preference is for [PostgreSQL](http://www.postgresql.org/). If you prefer [MySQL](http://www.mysql.com/), that's fine. I'm not going argue with you (though, you won't have trouble finding folks who will). The sql scripts in this repo do use some syntax and functions that are Postgres-specific, so if you're trying to follow along with MySQL, you'll have to account for the differences yourself.
+In terms of database managers, my current preference is for [PostgreSQL](http://www.postgresql.org/). If you prefer [MySQL](http://www.mysql.com/), that's fine. I'm not going argue with you (though, you won't have trouble finding folks who will). Note, though, that the sql scripts in this repo do use some syntax and functions that are Postgres-specific, so if you're trying to follow along with MySQL, you'll have to account for the differences yourself.
 
-But really though: This is a speculative research project focused on a small city paper conducted by a bunch novices. For a class. I'm not anticipating a lot of followers.
+But really though: This is a speculative research project focused on a small city paper conducted by a bunch of novices. For a class. I'm not anticipating a lot of followers.
 
 Anyway, if you're on a Mac, I recommend installing Postgres via [Homebrew](http://brew.sh/). If you don't already have Homebrew, don't worry. It's free and easy to install. Note that this process will also require installing command line tools for Xcode. Just follow the instructions.
 
@@ -66,7 +66,7 @@ Other columns we might consider adding:
 Importing CMS data
 ------------------
 
-The Missourian was also nice enough to give us a copy of their CMS database, which included every version of every artcle ever filed in it as well as the section of the Missourian in which the article was filed. This is an important get for us, as it will control for some of the confounding factors related to differences in the kinds of articles the Missourian is promoting on Facebook and Twitter. Otherwise, we might end up treating sports and local government stories as equvalent.
+The Missourian was also nice enough to give us a copy of their CMS database, which included every version of every artcle ever filed as well as the section of the Missourian in which the article was filed. This is an important get for us, as it will help in controlling for confounding factors related to differences in the kinds of articles the Missourian is promoting on Facebook and Twitter. Otherwise, we might end up treating sports and local government stories as equvalent.
 
 The Missourian CMS is a MySQL database, so we can't import the source file directly into PostgreSQL. So we have to spin a MySQL server and create a new database:
 
@@ -86,5 +86,7 @@ Data caveats
 
 Your data is never as complete it might seem at first glance, and you've got to be honest with yourself (and your audience) regarding what exactly you've accounted for and what's missing. The "known unknowns", if you care to get all epistemological about it.
 
-For example, the Social Flow message report data is not at all a complete picture of the attention Missourian articles have garnered on Facebook and Twitter. Rather, it merely accounts for the attention that content garnered via posts on the Missourian's official Facebook and Twitter accounts, which are run by the Missourian's social engagement team. No doubt there are plenty of other folks promoting Missourian content via their personal Facebook and Twitter accounts: Reporters, editors and photographers sharing their own work and that of their co-workers as well as audience members who may share links to whatever content they like. And the data we currently have doesn't tell us anything about those non-official social media posts and the attention they garnered.
+For example, the Social Flow message report data is not at all a complete picture of the attention Missourian articles have garnered on Facebook and Twitter. Rather, it merely accounts for the attention that content garnered via posts on the Missourian's official Facebook and Twitter accounts, which are run by the Missourian's social engagement team. No doubt there are plenty of other folks promoting Missourian content via their personal Facebook and Twitter accounts: Reporters, editors and photographers sharing their own work and their co-workers' work as well as audience members who may share links to whatever content they like. 
+
+The data we currently have doesn't tell us anything about those non-official social media posts and the attention they garnered.
 
