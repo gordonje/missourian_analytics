@@ -7,14 +7,14 @@ Intro
 
 The [Columbia Missourian](http://www.columbiamissourian.com/) has a lot of data about itself: Data about how much traffic its web pages are getting, data about how much attention its articles are getting on Facebook and Twitter, and of course columbiamissourian.com sets atop a content management system (CMS) that stores every version of every article its ever published to the web.
 
-So our quantitative research methods group got to wondering: What might all this data tell us? Granted, it's not exactly a laser-focused research question. Then again, if your trying to figure what research is both relevant and feasible, gathering together and exploring related datasets, is as good place as any to start.
+So our quantitative research methods group got to wondering: What might all these data tell us? Granted, it's not exactly a laser-focused research question. Then again, if your trying to figure what research is both relevant and feasible, gathering together and exploring related data sets is as good place as any to start.
 
 Set up
 ------
 
-We needed to put all relevant and potential interesting data that was potentially in a single database so that it would be easier to run queries and statistical procedures. 
+We needed to put all relevant and potential interesting data in a single database so that it would be easier to run queries and statistical procedures. 
 
-In terms of database managers, my current preference is for [PostgreSQL](http://www.postgresql.org/). If you prefer [MySQL](http://www.mysql.com/), that's fine. I'm not going argue with you (though, you won't have trouble finding folks who will). Note, though, that the sql scripts in this repo do use some syntax and functions that are Postgres-specific, so if you're trying to follow along with MySQL, you'll have to account for the differences yourself.
+My personal preference is to use [PostgreSQL](http://www.postgresql.org/). If you're trying follow along while using a different database manager (e.g., [MySQL](http://www.mysql.com/), [SQL Server](http://www.microsoft.com/en-us/server-cloud/products/sql-server/), etc.), then you'll need may need to account for some syntactical of functional differences. That's on you.
 
 But really though: This is a speculative research project focused on a small city paper conducted by a bunch of novices. For a class. I'm not anticipating a lot of followers.
 
@@ -30,7 +30,7 @@ Once Postgres is installed and the server is running, then make the database (fr
 
 While this repo includes several scripts for importing data, the raw data being imported is not included. For one thing, the files are rather large. Also, while the Missourian was nice enough to give us copies of whatever data they had, they did not give us (nor did we ask for) permission to pass it around to anybody. 
 
-Regardless, if you did somehow get access to the files related to this project, they should go in the [data/](https://github.com/gordonje/missourian_analytics/tree/master/data) directory. Though, for some scripts, an absolute path to the file is required, so you'll have to make those changes where noted.
+Regardless, if you did somehow get access to the files related to this project, they should go in the [data/](https://github.com/gordonje/missourian_analytics/tree/master/data) directory. For some scripts, an absolute path to the file is required, so you'll have to make those changes where noted.
 
 Importing Social Flow data
 --------------------------
@@ -66,12 +66,26 @@ Other columns we might consider adding:
 Importing CMS data
 ------------------
 
-The Missourian was also nice enough to give us a copy of their CMS database, which included every version of every artcle ever filed as well as the section of the Missourian in which the article was filed. This is an important get for us, as it will help in controlling for confounding factors related to differences in the kinds of articles the Missourian is promoting on Facebook and Twitter. Otherwise, we might end up treating sports and local government stories as equvalent.
+The Social Flow message report tells us what content the Missourian is promoted on Facebook and Twitter, but we want to know more about each individual piece of content. As our quant methods professor point out to us, any analysis we want to perform might need to control for confounding factors related to differences in the kinds of articles the Missourian is promoting on Facebook and Twitter. Otherwise, we would be treating sports and local government stories as equvalent.
 
-The Missourian CMS is a MySQL database, so we can't import the source file directly into PostgreSQL. So we have to spin a MySQL server and create a new database:
+Thankfully, the Missourian was also nice enough to give us a copy of their CMS database, which included every version of every artcle ever filed as well as the section of the Missourian in which the article was filed.
+
+This CMS is built in [Django](https://www.djangoproject.com/) with a a MySQL backend. Attempts to import the .sql file directly into Postgres failed miserably (not all that shocking), so we had to do a little extra work. Still worth so as to get to pull things together into Postgres.
+
+So we have to spin up a MySQL server. If you don't already have MySQL, Mac folks, again use Homebrew (everyone else figure it out). And even if you already have MySQL, you should first make sure everything is up-to-date. Run `brew doctor` then `brew update` then `brew upgrade mysql`. You might need to run this last command more than once, as I did, in order to get to the latest version.
+
+Then you need to start the MySQL server. Though, this step gave us a bit of trouble:
+
+	$ mysql.server start
+	Starting MySQL..
+	. ERROR! The server quit without updating PID file (/usr/local/some/path/[something that looks like a URL].pid).
+
+Super annoying. But a little Googling and we came across [a couple](http://coolestguidesontheplanet.com/mysql-error-server-quit-without-updating-pid-file/) [of posts](http://www.mahdiyusuf.com/post/21022913180/mysql-the-server-quit-without-updating-pid-file) describing the same issue and an easy fix. Just remove these .err files like so `rm *.err /path/to/file/data/mentioned_in_previous_error` then start the server for real this time `mysql.server start`.
+
+Then, create a MySQL database:
 
 	$ mysql -u root -p
-	Enter password: <
+	Enter password:
 	# CREATE DATABASE [db_name];
 	# \q
 
@@ -80,6 +94,8 @@ Then import the source file:
 	$ mysql -u root -p
 	# CREATE DATABASE [db_name];
 	# \q
+
+Now we can bust out our db client and grab the goods out of the CMS. [This query](https://github.com/gordonje/missourian_analytics/blob/master/sql/export_from_cms.sql) will create a .csv file containing a record of each section in which it article has been filed. Switch back to Postgres and run [these queries](https://github.com/gordonje/missourian_analytics/blob/master/sql/import_cms_data.sql) in order to import this file into Postgres.
 
 Data caveats
 ------------
