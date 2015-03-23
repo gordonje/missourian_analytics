@@ -132,7 +132,7 @@ The links included in the Facebook and Twitter posts, of course, point to Missou
 
 In many cases, the Missourian is promoting a specific article. And luckily the article_id and slug from the CMS are embedded in the URL to article. So for http://www.columbiamissourian.com/a/145793/temporary-lane-closure-on-eighth-street-begins-monday/, the article_id is **145793** and the slug is **temporary-lane-closure-on-eighth-street-begins-monday**. 
 
-The **a** in the previous URL indicates that the link points to an article, represented in the CMS as a `core_article` row. The *p* instead would point toward a specific page, that is, a `core_page` record, for example, (http://www.columbiamissourian.com/p/2012-primary-election/).
+The **a** in the previous URL indicates that the link points to an article, represented in the CMS as a `core_article` row. The *p* instead would point toward a specific page, that is, a `core_page` record (for example, http://www.columbiamissourian.com/p/2012-primary-election/).
 
 But there's a major problem: [60 percent](https://github.com/gordonje/missourian_analytics/blob/master/sql/check_links.sql) of URLs found in the Missourian's Social Flow messages aren't direct links to columbiamissourian.com, but rather URLs shortened via services like [bit.ly](https://bitly.com/).
 
