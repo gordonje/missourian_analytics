@@ -5,23 +5,23 @@ FROM messages_links;
 -- All the link include the scheme
 SELECT COUNT(*)
 FROM messages_links
-WHERE link like 'http%';
+WHERE link LIKE 'http%';
 
 -- 60 percent of the links aren't direct to columbiamissourian.com
-SELECT COUNT(*), COUNT(*)::float / (SELECT COUNT(*) FROM messages_links)::float as pct
+SELECT COUNT(*), COUNT(*)::float / (SELECT COUNT(*) FROM messages_links)::float AS pct
 FROM messages_links
-WHERE link not like 'http://%columbiamissourian.com%';
+WHERE link NOT LIKE 'http://%columbiamissourian.com%';
 
 -- 56 percent go through bit.ly
-SELECT COUNT(*), COUNT(*)::float / (SELECT COUNT(*) FROM messages_links)::float as pct
+SELECT COUNT(*), COUNT(*)::float / (SELECT COUNT(*) FROM messages_links)::float AS pct
 FROM messages_links
-WHERE link like '%bit.ly%'
-OR link like '%bitly%';
+WHERE link LIKE '%bit.ly%'
+OR link LIKE '%bitly%';
 
 -- 3 percent go through trib.al
-SELECT COUNT(*), COUNT(*)::float / (SELECT COUNT(*) FROM messages_links)::float as pct
+SELECT COUNT(*), COUNT(*)::float / (SELECT COUNT(*) FROM messages_links)::float AS pct
 FROM messages_links
-WHERE link like '%trib.al%';
+WHERE link LIKE '%trib.al%';
 
 -- 441 are links to other content providers
 SELECT *
