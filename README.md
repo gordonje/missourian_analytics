@@ -5,7 +5,7 @@ Exploring and researching the Columbia Missourian's website analytics, social me
 Intro
 -----
 
-The [Columbia Missourian](http://www.columbiamissourian.com/) has a lot of data about itself: Data about the traffic on its web pages, data about the attention posts are getting on Facebook and Twitter, and of course columbiamissourian.com sets atop a content management system (CMS) that stores every version of every article its ever published to the web.
+The [Columbia Missourian](http://www.columbiamissourian.com/) has a lot of data about itself: Data about the traffic on its web pages, data about the attention posts are getting on Facebook and Twitter, and of course columbiamissourian.com sits atop a content management system (CMS) that stores every version of every article its ever published to the web.
 
 So our quantitative research methods group got to wondering: What might all these data tell us? Granted, it's not exactly a laser-focused research question. Then again, if you're trying to figure what research is both relevant and feasible, gathering together and exploring related data sets is as good place as any to start.
 
@@ -16,7 +16,7 @@ We needed to put all relevant and potentially interesting data into a single dat
 
 But really though: This is a speculative research project focused on a small city paper conducted by a bunch of novices. For a class. I'm not anticipating a lot of followers.
 
-Anyway, if you're on a Mac, I recommend installing Postgres via [Homebrew](http://brew.sh/). If you don't already have Homebrew, don't worry. It's free and easy to install. Note that this process will also require installing command line tools for Xcode. Just follow the instructions.
+Anyway, if you're on a Mac, I recommend installing Postgres via [Homebrew](http://brew.sh/). If you don't already have Homebrew, don't worry. It's free and easy to install. Note that this process will also require installing command line tools for Xcode. Just follow the Homebrew installation instructions, then run `brew install mysql`.
 
 If you're on Windows or Linux...I don't know, man, just figure it out.
 
@@ -28,14 +28,14 @@ Once Postgres is installed and the server is running, then make the database (fr
 
 While this repo includes several scripts for importing data, the raw data being imported is not included. For one thing, the files are rather large. Also, while the Missourian was nice enough to give us copies of whatever data they had, they did not give us (nor did we ask for) permission to pass it around to anybody. 
 
-Regardless, if you did somehow get access to the files related to this project, they should go in the [data/](https://github.com/gordonje/missourian_analytics/tree/master/data) directory. For some scripts, an absolute path to the file is required, so you'll have to make those changes where noted.
+Regardless, if you somehow got hold of the files related to this project, they should go in the [data/](https://github.com/gordonje/missourian_analytics/tree/master/data) directory. For some scripts, an absolute path to the file is required, so you'll have to make those changes where noted.
 
 Importing Social Flow data
 --------------------------
 
 [Social Flow](http://www.socialflow.com/) is a service used by the Missourian to manage its Facebook and Twitter accounts. This includes posting messages and tracking the attention they garner in terms of likes, favorites, shares and comments. 
 
-The Missourian was nice enough to grant us access to their Social Flow account, so once logged in, we exported what's called a "messages report" which includes a record for every Facebook and Twitter post by the Missourian's staff from Feb. 16, 2012 to Feb. 10, 2015. That's 23,131 Facebook and Twitter posts over the course of three years.
+The Missourian graciously gave us credentials to their Social Flow account, so once logged in, we exported what's called a "messages report" which includes a record for every Facebook and Twitter post by the Missourian's staff from Feb. 16, 2012 to Feb. 10, 2015. That's 23,131 Facebook and Twitter posts over the course of three years.
 
 To import this data into Postgres, open your database client (e.g., Navicat), connect to new the database, then [create](https://github.com/gordonje/missourian_analytics/blob/master/create_social_flow.sql) and [load](https://github.com/gordonje/missourian_analytics/blob/master/sql/load_social_flow.sql) social flow data. This includes adding a serialized id field as a primary key.
 
@@ -68,7 +68,7 @@ The Social Flow message report tells us what content the Missourian has promoted
 
 Thankfully, the Missourian was also nice enough to give us a copy of their CMS database, which included every version of every artcle ever filed as well as the section of the Missourian in which the article was filed.
 
-This CMS is built in [Django](https://www.djangoproject.com/) with a a MySQL backend. Attempts to import the .sql file directly into Postgres failed miserably (not all that shocking), so we had to do a little extra work. Still worth so as to get to pull things together into Postgres.
+This CMS is built in [Django](https://www.djangoproject.com/) with a a MySQL backend. Attempts to import the .sql file directly into Postgres failed miserably (not all that shocking), so we had to do a little extra work. Still worth it so as to get to pull things together into Postgres.
 
 So we have to spin up a MySQL server. If you don't already have MySQL, Mac folks, again use Homebrew (everyone else figure it out). And even if you already have MySQL, you should first make sure everything is up-to-date. Run `brew doctor` then `brew update` then `brew upgrade mysql`. You might need to run this last command more than once, as I did, in order to get to the latest version.
 
@@ -93,22 +93,22 @@ Then import the source file:
 	# CREATE DATABASE [db_name];
 	# \q
 
-Now we can explore this CMS data a bit more:
+Now we can explore these CMS data a bit more:
 
 *	There were 107,422 articles published between July 2002 and...apparently December 2020. Seems like a bug, but one that only affected 13 articles.
 *	Most articles are filed in at least on section of the Missourian. Only 379 were not.
 *	Half of the articles were filed in multiple sections. Only on article was filed in eight section. Apparently, [when there's a Harry Potter movie opening](http://www.columbiamissourian.com/a/116132/harry-potter-fans-flock-to-columbia-for-midnight-movie-release/), everybody wants a piece.
 
-So now grab the goods and head back over to Postgres:
+So now we can grab the goods and head back over to Postgres:
 *	[This query](https://github.com/gordonje/missourian_analytics/blob/master/sql/export_from_cms.sql) will create a .csv file containing a record of each section in which it article has been filed.
 *	Switch back to Postgres and run [these queries](https://github.com/gordonje/missourian_analytics/blob/master/sql/import_cms_data.sql) in order to import this file into Postgres.
 
 Data caveats
 ------------
 
-Your data is never as complete it might seem at first glance, and you've got to be honest with yourself (and your audience) regarding what exactly you've accounted for and what's missing. The "known unknowns", if you care to get all epistemological about it.
+Your data are never as complete they might seem at first glance, and you've got to be honest with yourself (and your audience) regarding what exactly is accounted for and what's missing. The "known unknowns", if you care to get all epistemological about it.
 
-For example, the Social Flow message report data is not at all a complete picture of the attention Missourian articles have garnered on Facebook and Twitter. Rather, it merely accounts for the attention that content garnered via posts on the Missourian's official Facebook and Twitter accounts, which are run by the Missourian's social engagement team. No doubt there are plenty of other folks promoting Missourian content via their personal Facebook and Twitter accounts: Reporters, editors and photographers sharing their own work and their co-workers' work as well as audience members who may share links to whatever content they like. 
+For example, the Social Flow message report data is not at all a complete picture of the attention Missourian articles have garnered on Facebook and Twitter. Rather, it merely accounts for how much attention was paid to posts on the Missourian's official Facebook and Twitter accounts, which are run by the Missourian's social engagement team. No doubt there are plenty of other folks promoting Missourian content via their personal Facebook and Twitter accounts: Reporters, editors and photographers sharing their own work and their co-workers' work as well as audience members who may share links to whatever content they like. 
 
-The data we currently have doesn't tell us anything about those non-official social media posts and the attention they garnered.
+The data we currently have doesn't tell us anything about those non-official social media posts and the attention they received.
 
