@@ -99,25 +99,25 @@ Now we can explore these CMS data a bit more:
 *	Most articles are filed in at least on section of the Missourian. Only 379 were not.
 *	Half of the articles were filed in multiple sections. Only on article was filed in eight section. Apparently, [when there's a Harry Potter movie opening](http://www.columbiamissourian.com/a/116132/harry-potter-fans-flock-to-columbia-for-midnight-movie-release/), everybody wants a piece.
 *	We can also get the proportion of articles filed in each section. Here are the top one:
-**	Local 36.12 %
-**	News 28.8 %
-**	State News 16.83 %
-**	Sports	13.77 %
-**	Other Sports 12.57 %
-**	Opinion 4.76 %
-**	Higher Education 3.84 %
+	*	Local 36.12 %
+	*	News 28.8 %
+	*	State News 16.83 %
+	*	Sports	13.77 %
+	*	Other Sports 12.57 %
+	*	Opinion 4.76 %
+	*	Higher Education 3.84 %
 
 But since we are combining these CMS data with the Social Flow data, we should restrict our exploration to the window of time where they overlap:
 *	Between Feb. 16, 2012, and Feb. 10, 2015, the Missourian published 38,146 articles.
 *	Still, half of them were filed in multiple sections, as many as six.
 *	And here are the proportions:
-**	News 32 %
-**	Sports 24.72 %
-**	Local 24 %
-**	State News 18.35 %
-**	Pro Sports 8.6 %
-**	Mizzou Sports 7.52 %
-**	Opinion 6.14 %
+	*	News 32 %
+	*	Sports 24.72 %
+	*	Local 24 %
+	*	State News 18.35 %
+	*	Pro Sports 8.6 %
+	*	Mizzou Sports 7.52 %
+	*	Opinion 6.14 %
 
 So now we can grab the goods and head back over to Postgres:
 
