@@ -100,7 +100,7 @@ Now we can explore these CMS data a bit more:
 *	Half of the articles were filed in multiple sections. Only on article was filed in eight section. Apparently, [when there's a Harry Potter movie opening](http://www.columbiamissourian.com/a/116132/harry-potter-fans-flock-to-columbia-for-midnight-movie-release/), everybody wants a piece.
 
 So now we can grab the goods and head back over to Postgres:
-*	[This query](https://github.com/gordonje/missourian_analytics/blob/master/sql/export_from_cms.sql) will create a .csv file containing a record of each section in which it article has been filed.
+*	[This query](https://github.com/gordonje/missourian_analytics/blob/master/sql/export_from_cms.sql) will create a .csv file containing a record of each section in which each article has been filed.
 *	Switch back to Postgres and run [these queries](https://github.com/gordonje/missourian_analytics/blob/master/sql/import_cms_data.sql) in order to import this file into Postgres.
 
 Data caveats
