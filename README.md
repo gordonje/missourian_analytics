@@ -53,7 +53,9 @@ We can also create some relational tables:
 
 *	[hash_tags](https://github.com/gordonje/missourian_analytics/blob/master/sql/add_hashtags.sql): Contains records of #hash_tags and the id of each message in which that #hash_tag is included. Using this table, we can also add a hash_tag_count column to the primary table.
 *	[handles](https://github.com/gordonje/missourian_analytics/blob/master/sql/add_handles.sql): Contains records of @handles and the id of each message in which that @handle is included. And again, we can add an at_tags_count column to the primary table.
-*	[links](https://github.com/gordonje/missourian_analytics/blob/master/sql/add_links.sql): Contains records of URLs and the id of each message in which that URL is included. Note that this includes not only the URLs found in the message field but also the URL in the link field (if there is one), as these are never the same. Also added a links_count column to the primary table.
+*	[links](https://github.com/gordonje/missourian_analytics/blob/master/sql/add_links.sql): Contains records of URLs and the id of each message in which that URL is included. Note that this includes not only the URLs found in the message field but also the URL in the link field (if there is one), as these are never the same. We also added a links_count column to the primary table.
+
+We should also add [some indexes](https://github.com/gordonje/missourian_analytics/blob/master/sql/index_social_flow_data.sql) to many of these columns so that our queries will run a little faster.
 
 Other columns we might consider adding:
 
@@ -121,13 +123,29 @@ So now we can grab the goods and head back over to Postgres:
 
 *	[This query](https://github.com/gordonje/missourian_analytics/blob/master/sql/export_from_cms.sql) will create a .csv file containing a record of each section in which each article has been filed.
 *	Switch back to Postgres and run [these queries](https://github.com/gordonje/missourian_analytics/blob/master/sql/import_cms_data.sql) in order to import this file into Postgres.
+*	And, for good measure, let's add some [more indexes](https://github.com/gordonje/missourian_analytics/blob/master/sql/index_articles_sections.sql).
+
+Joining Social Flow and CMS data
+--------------------------------
+
+The links included in the Facebook and Twitter posts, of course, point to Missourian content. That's how we can figure out how much social media attention each individual piece of content received.
+
+In many cases, the Missourian is promoting a specific article. And luckily the article_id and slug from the CMS are embedded in the URL to article. So for (http://www.columbiamissourian.com/a/145793/temporary-lane-closure-on-eighth-street-begins-monday/), the article_id is *145793*and the slug is *temporary-lane-closure-on-eighth-street-begins-monday*. 
+
+The *a* in the previous URL indicates that the link points to an article, represented in the CMS as a `core_article` row. The *p* instead would point toward a specific page, that is, a `core_page` record, for example, (http://www.columbiamissourian.com/p/2012-primary-election/).
+
+But there's a major problem: [60 percent](https://github.com/gordonje/missourian_analytics/blob/master/sql/check_links.sql) of URLs found in the Missourian's Social Flow messages aren't direct links to columbiamissourian.com, but rather URLs shortened via services like [bit.ly](https://bitly.com/).
+
+Are we going to let a snag like this stand in the way of our important, ground-breaking research? Hell no! So we wrote a [Python script]() that requests each shortened URL and collects the full_url to which it re-directs. 
+
+First, we need to install some Python libraries to help us get the job done. If you're using a Mac, you might want to follow best practices and set up virtual environment (I use [virtualenv](https://virtualenv.pypa.io/en/latest/) along with [virtualenvwrapper](https://virtualenvwrapper.readthedocs.org/en/latest/)). Then `pip install requests` (for handling HTTP requests) and `pip install psycog2` (for connecting to our Postgres database).
 
 Data caveats
 ------------
 
 Your data are never as complete they seem at first glance, and you've got to be honest with yourself (and your audience) regarding what exactly is accounted for and what's missing. The "known unknowns", if you care to get all epistemological about it.
 
-For example, the Social Flow message report data is not at all a complete picture of the attention Missourian articles have garnered on Facebook and Twitter. Rather, it merely accounts for how much attention was paid to posts on the Missourian's official Facebook and Twitter accounts, which are run by the Missourian's social engagement team. No doubt there are plenty of other folks promoting Missourian content via their personal Facebook and Twitter accounts: Reporters, editors and photographers sharing their own work and their co-workers' work as well as audience members who may share links to whatever content they like. 
+For example, the Social Flow message report data is not at all a complete picture of the attention Missourian content has garnered on Facebook and Twitter. Rather, it merely accounts for how much attention was paid to posts on the Missourian's official Facebook and Twitter accounts, which are run by the Missourian's social engagement team. No doubt there are plenty of other folks promoting Missourian content via their personal Facebook and Twitter accounts: Reporters, editors and photographers sharing their own work and their co-workers' work as well as audience members who may share links to whatever content they like. 
 
 The data we currently have doesn't tell us anything about those non-official social media posts and the attention they received.
 
