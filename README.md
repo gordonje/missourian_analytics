@@ -110,7 +110,7 @@ Now we can explore these CMS data a bit more:
 But since we are combining these CMS data with the Social Flow data, we should restrict our exploration to the window of time where they overlap:
 *	Between Feb. 16, 2012, and Feb. 10, 2015, the Missourian published 38,146 articles.
 *	Still, half of them were filed in multiple sections, as many as six.
-*	And here are the proportions:
+*	And here are the proportions for article sections:
 	*	News 32 %
 	*	Sports 24.72 %
 	*	Local 24 %
