@@ -1,6 +1,9 @@
 SELECT 
         article_id
       , core_article.hed
+      , pub_time
+      , core_article.slug as article_slug
+      , status
       , section_id
       , core_section.hed as section_name
       , core_section.is_active

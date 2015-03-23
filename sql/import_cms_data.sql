@@ -1,7 +1,11 @@
+DROP TABLE articles_sections;
 -- create the table with fields as character data type
 CREATE TABLE articles_sections (
         article_id VARCHAR(255)
       , hed VARCHAR(255)
+      , pub_time TIMESTAMP
+      , article_slug VARCHAR(255)
+      , status VARCHAR(255)
       , section_id VARCHAR(255)
       , section_name VARCHAR(255)
       , is_active VARCHAR(255)
