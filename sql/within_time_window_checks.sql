@@ -28,7 +28,7 @@ GROUP BY article_id
 HAVING COUNT(*) > 1
 ORDER BY COUNT(*) DESC;
 
--- 
+-- Get the proportions of article sections
 SELECT section_id, core_section.hed, COUNT(*), COUNT(*) / (SELECT COUNT(*) FROM core_article WHERE pub_time > '2012-02-15' AND pub_time < '2015-02-11') as pct
 FROM core_article_sections
 JOIN core_section

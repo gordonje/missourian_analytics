@@ -93,10 +93,10 @@ Then import the CMS data file:
 
 Now we can explore these CMS data a bit more:
 
-*	There were 107,422 articles published between July 2002 and...apparently December 2020. Seems like a bug, but one that only affected 13 articles.
-*	Most articles are filed in at least on section of the Missourian. Only 379 were not.
-*	Half of the articles were filed in multiple sections. Only on article was filed in eight section. Apparently, [when there's a Harry Potter movie opening](http://www.columbiamissourian.com/a/116132/harry-potter-fans-flock-to-columbia-for-midnight-movie-release/), everybody wants a piece.
-*	We can also get the proportion of articles filed in each section. Here are the top one:
+*	There were [107,422 articles](https://github.com/gordonje/missourian_analytics/blob/master/sql/prelim_cms_checks.sql#L1-L3) published between [July 2002](https://github.com/gordonje/missourian_analytics/blob/master/sql/prelim_cms_checks.sql#L5-L9) and...[apparently December 2020](https://github.com/gordonje/missourian_analytics/blob/master/sql/prelim_cms_checks.sql#L11-L15). Seems like a bug, but one that [affected only 13 articles](https://github.com/gordonje/missourian_analytics/blob/master/sql/prelim_cms_checks.sql#L17-L20).
+*	Most articles are filed in [at least one section](https://github.com/gordonje/missourian_analytics/blob/master/sql/prelim_cms_checks.sql#L29-L37) of the Missourian. Only 379 were not.
+*	Half of the articles were [filed in multiple sections](https://github.com/gordonje/missourian_analytics/blob/master/sql/prelim_cms_checks.sql#L39-L46). Only one article was filed in eight section. Apparently, [when there's a Harry Potter movie opening](http://www.columbiamissourian.com/a/116132/harry-potter-fans-flock-to-columbia-for-midnight-movie-release/), everybody wants a piece.
+*	We can also [get the proportion of articles](https://github.com/gordonje/missourian_analytics/blob/master/sql/prelim_cms_checks.sql#L39-L46) filed in each section. Here are the top one:
 	*	Local 36.12 %
 	*	News 28.8 %
 	*	State News 16.83 %
@@ -105,10 +105,10 @@ Now we can explore these CMS data a bit more:
 	*	Opinion 4.76 %
 	*	Higher Education 3.84 %
 
-But since we are combining these CMS data with the Social Flow data, we should restrict our exploration to the window of time where they overlap:
-*	Between Feb. 16, 2012, and Feb. 10, 2015, the Missourian published 38,146 articles.
-*	Still, half of them were filed in multiple sections, as many as six.
-*	And here are the proportions for article sections:
+But since we're combining these CMS data with the Social Flow data, we should restrict our exploration to the window of time where they overlap:
+*	Between Feb. 16, 2012, and Feb. 10, 2015, the Missourian [published 38,146 articles](https://github.com/gordonje/missourian_analytics/blob/master/sql/within_time_window_checks.sql#L1-L5).
+*	Still, [half](https://github.com/gordonje/missourian_analytics/blob/master/sql/within_time_window_checks.sql#L7-L18) of them were filed in multiple sections, as many as [six](https://github.com/gordonje/missourian_analytics/blob/master/sql/within_time_window_checks.sql#L7-L18).
+*	And here are the [proportions](https://github.com/gordonje/missourian_analytics/blob/master/sql/within_time_window_checks.sql#L7-L18) for article sections:
 	*	News 32 %
 	*	Sports 24.72 %
 	*	Local 24 %
