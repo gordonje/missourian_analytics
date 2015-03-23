@@ -5,16 +5,14 @@ Exploring and researching the Columbia Missourian's website analytics, social me
 Intro
 -----
 
-The [Columbia Missourian](http://www.columbiamissourian.com/) has a lot of data about itself: Data about how much traffic its web pages are getting, data about how much attention its articles are getting on Facebook and Twitter, and of course columbiamissourian.com sets atop a content management system (CMS) that stores every version of every article its ever published to the web.
+The [Columbia Missourian](http://www.columbiamissourian.com/) has a lot of data about itself: Data about the traffic on its web pages, data about the attention posts are getting on Facebook and Twitter, and of course columbiamissourian.com sets atop a content management system (CMS) that stores every version of every article its ever published to the web.
 
-So our quantitative research methods group got to wondering: What might all these data tell us? Granted, it's not exactly a laser-focused research question. Then again, if your trying to figure what research is both relevant and feasible, gathering together and exploring related data sets is as good place as any to start.
+So our quantitative research methods group got to wondering: What might all these data tell us? Granted, it's not exactly a laser-focused research question. Then again, if you're trying to figure what research is both relevant and feasible, gathering together and exploring related data sets is as good place as any to start.
 
 Set up
 ------
 
-We needed to put all relevant and potential interesting data in a single database so that it would be easier to run queries and statistical procedures. 
-
-My personal preference is to use [PostgreSQL](http://www.postgresql.org/). If you're trying follow along while using a different database manager (e.g., [MySQL](http://www.mysql.com/), [SQL Server](http://www.microsoft.com/en-us/server-cloud/products/sql-server/), etc.), then you'll need may need to account for some syntactical of functional differences. That's on you.
+We needed to put all relevant and potentially interesting data into a single database in order to run queries and statistical procedures. My personal preference is to use [PostgreSQL](http://www.postgresql.org/). If you're trying follow along while using a different database manager (e.g., [MySQL](http://www.mysql.com/), [SQL Server](http://www.microsoft.com/en-us/server-cloud/products/sql-server/), etc.), then you'll need may need to account for some syntactical of functional differences. That's on you.
 
 But really though: This is a speculative research project focused on a small city paper conducted by a bunch of novices. For a class. I'm not anticipating a lot of followers.
 
@@ -37,7 +35,7 @@ Importing Social Flow data
 
 [Social Flow](http://www.socialflow.com/) is a service used by the Missourian to manage its Facebook and Twitter accounts. This includes posting messages and tracking the attention they garner in terms of likes, favorites, shares and comments. 
 
-The Missourian was nice enough to grant us access to their Social Flow account. Once logged in, we were able to export a messages report that included a record for every Facebook and Twitter post by the Missourian's staff from Feb. 16, 2012 to Feb. 10, 2015. That's 23,131 Facebook and Twitter posts over the course of three years.
+The Missourian was nice enough to grant us access to their Social Flow account, so once logged in, we exported what's called a "messages report" which includes a record for every Facebook and Twitter post by the Missourian's staff from Feb. 16, 2012 to Feb. 10, 2015. That's 23,131 Facebook and Twitter posts over the course of three years.
 
 To import this data into Postgres, open your database client (e.g., Navicat), connect to new the database, then [create](https://github.com/gordonje/missourian_analytics/blob/master/create_social_flow.sql) and [load](https://github.com/gordonje/missourian_analytics/blob/master/sql/load_social_flow.sql) social flow data. This includes adding a serialized id field as a primary key.
 
@@ -66,7 +64,7 @@ Other columns we might consider adding:
 Importing CMS data
 ------------------
 
-The Social Flow message report tells us what content the Missourian is promoted on Facebook and Twitter, but we want to know more about each individual piece of content. As our quant methods professor point out to us, any analysis we want to perform might need to control for confounding factors related to differences in the kinds of articles the Missourian is promoting on Facebook and Twitter. Otherwise, we would be treating sports and local government stories as equvalent.
+The Social Flow message report tells us what content the Missourian has promoted on Facebook and Twitter, but we want to know more about each individual piece of content. As our quant methods professor point out to us, any analysis we want to perform might need to control for confounding factors related to differences in the kinds of articles the Missourian is promoting on Facebook and Twitter. Otherwise, we would be treating sports and local government stories as equvalent.
 
 Thankfully, the Missourian was also nice enough to give us a copy of their CMS database, which included every version of every artcle ever filed as well as the section of the Missourian in which the article was filed.
 
@@ -95,7 +93,15 @@ Then import the source file:
 	# CREATE DATABASE [db_name];
 	# \q
 
-Now we can bust out our db client and grab the goods out of the CMS. [This query](https://github.com/gordonje/missourian_analytics/blob/master/sql/export_from_cms.sql) will create a .csv file containing a record of each section in which it article has been filed. Switch back to Postgres and run [these queries](https://github.com/gordonje/missourian_analytics/blob/master/sql/import_cms_data.sql) in order to import this file into Postgres.
+Now we can explore this CMS data a bit more:
+
+*	There were 107,422 articles published between July 2002 and...apparently December 2020. Seems like a bug, but one that only affected 13 articles.
+*	Most articles are filed in at least on section of the Missourian. Only 379 were not.
+*	Half of the articles were filed in multiple sections. Only on article was filed in eight section. Apparently, [when there's a Harry Potter movie opening](http://www.columbiamissourian.com/a/116132/harry-potter-fans-flock-to-columbia-for-midnight-movie-release/), everybody wants a piece.
+
+So now grab the goods and head back over to Postgres:
+*	[This query](https://github.com/gordonje/missourian_analytics/blob/master/sql/export_from_cms.sql) will create a .csv file containing a record of each section in which it article has been filed.
+*	Switch back to Postgres and run [these queries](https://github.com/gordonje/missourian_analytics/blob/master/sql/import_cms_data.sql) in order to import this file into Postgres.
 
 Data caveats
 ------------
