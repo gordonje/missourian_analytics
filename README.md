@@ -88,6 +88,7 @@ Then, create a MySQL database:
 	# \q
 
 Then import the CMS data file:
+
 	$ mysql -u root -p [cms database name] < /path/to/this_file/missouriandb.sql
 
 Now we can explore these CMS data a bit more:
