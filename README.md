@@ -87,11 +87,7 @@ Then, create a MySQL database:
 	# CREATE DATABASE [db_name];
 	# \q
 
-Then import the source file:
-
-	$ mysql -u root -p
-	# CREATE DATABASE [db_name];
-	# \q
+Then import the source file `$ mysql -u root -p [cms database name] < /path/to/this_file/missouriandb.sql`.
 
 Now we can explore these CMS data a bit more:
 
