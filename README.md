@@ -37,7 +37,7 @@ Importing Social Flow data
 
 The Missourian graciously gave us credentials to their Social Flow account, so once logged in, we exported what's called a "messages report" which includes a record for every Facebook and Twitter post by the Missourian's staff from Feb. 16, 2012 to Feb. 10, 2015. That's 23,131 Facebook and Twitter posts over the course of three years.
 
-To import this data into Postgres, open your database client (e.g., Navicat), connect to new the database, then [create](https://github.com/gordonje/missourian_analytics/blob/master/create_social_flow.sql) and [load](https://github.com/gordonje/missourian_analytics/blob/master/sql/load_social_flow.sql) social flow data. This includes adding a serialized id field as a primary key.
+To import the data into Postgres, open your database client (e.g., Navicat), connect to new the database, then [create](https://github.com/gordonje/missourian_analytics/blob/master/create_social_flow.sql) and [load](https://github.com/gordonje/missourian_analytics/blob/master/sql/load_social_flow.sql) social flow data. This includes adding a serialized id field as a primary key.
 
 Now with the data loaded, we can start to extract some additional info:
 
@@ -66,9 +66,9 @@ Other columns we might consider adding:
 Importing CMS data
 ------------------
 
-The Social Flow message report tells us what content the Missourian has promoted on Facebook and Twitter, but we want to know more about each individual piece of content. As our quant methods professor point out to us, any analysis we want to perform might need to control for confounding factors related to differences in the kinds of articles the Missourian is promoting on Facebook and Twitter. Otherwise, we would be treating sports and local government stories as equvalent.
+The Social Flow message report tells us what content the Missourian has promoted on Facebook and Twitter, but we want to know more about each individual piece of content. As our quant methods professor pointed out to us, any analysis we want to perform might need to control for confounding factors related to differences in the kinds of articles the Missourian is promoting on Facebook and Twitter. Otherwise, we would be treating sports and local government stories as equivalent.
 
-Thankfully, the Missourian was also nice enough to give us a copy of their CMS database, which included every version of every artcle ever filed as well as the section of the Missourian in which the article was filed.
+Thankfully, the Missourian was also nice enough to give us a copy of their CMS database, which includes every version of every article ever filed as well as the section of the Missourian in which the article was filed.
 
 This CMS is built in [Django](https://www.djangoproject.com/) with a a MySQL backend. Attempts to import the .sql file directly into Postgres failed miserably (not all that shocking), so we had to do a little extra work. Still worth it so as to get to pull things together into Postgres.
 
@@ -93,7 +93,7 @@ Then import the CMS data file:
 
 	$ mysql -u root -p [cms database name] < /path/to/this_file/missouriandb.sql
 
-Now we can explore these CMS data a bit more:
+Now we can explore the CMS data a bit more:
 
 *	There were [107,422 articles](https://github.com/gordonje/missourian_analytics/blob/master/sql/prelim_cms_checks.sql#L1-L3) published between [July 2002](https://github.com/gordonje/missourian_analytics/blob/master/sql/prelim_cms_checks.sql#L5-L9) and...[apparently December 2020](https://github.com/gordonje/missourian_analytics/blob/master/sql/prelim_cms_checks.sql#L11-L15). Seems like a bug, but one that [affected only 13 articles](https://github.com/gordonje/missourian_analytics/blob/master/sql/prelim_cms_checks.sql#L17-L20).
 *	Most articles are filed in [at least one section](https://github.com/gordonje/missourian_analytics/blob/master/sql/prelim_cms_checks.sql#L29-L37) of the Missourian. Only 379 were not.
@@ -130,9 +130,9 @@ Joining Social Flow and CMS data
 
 The links included in the Facebook and Twitter posts, of course, point to Missourian content. That's how we can figure out how much social media attention each individual piece of content received.
 
-In many cases, the Missourian is promoting a specific article. And luckily the article_id and slug from the CMS are embedded in the URL to article. So for (http://www.columbiamissourian.com/a/145793/temporary-lane-closure-on-eighth-street-begins-monday/), the article_id is *145793*and the slug is *temporary-lane-closure-on-eighth-street-begins-monday*. 
+In many cases, the Missourian is promoting a specific article. And luckily the article_id and slug from the CMS are embedded in the URL to article. So for http://www.columbiamissourian.com/a/145793/temporary-lane-closure-on-eighth-street-begins-monday/, the article_id is **145793** and the slug is **temporary-lane-closure-on-eighth-street-begins-monday**. 
 
-The *a* in the previous URL indicates that the link points to an article, represented in the CMS as a `core_article` row. The *p* instead would point toward a specific page, that is, a `core_page` record, for example, (http://www.columbiamissourian.com/p/2012-primary-election/).
+The **a** in the previous URL indicates that the link points to an article, represented in the CMS as a `core_article` row. The *p* instead would point toward a specific page, that is, a `core_page` record, for example, (http://www.columbiamissourian.com/p/2012-primary-election/).
 
 But there's a major problem: [60 percent](https://github.com/gordonje/missourian_analytics/blob/master/sql/check_links.sql) of URLs found in the Missourian's Social Flow messages aren't direct links to columbiamissourian.com, but rather URLs shortened via services like [bit.ly](https://bitly.com/).
 
