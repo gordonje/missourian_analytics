@@ -36,19 +36,24 @@ WHERE id NOT IN (
 )
 ORDER BY pub_time DESC;
 
--- 52,983 articles in multiple sections
+-- 52,992 articles in multiple sections
 SELECT COUNT(*)
 FROM (
         SELECT article_id, COUNT(*)
-        FROM core_article
-        JOIN core_article_sections
-        ON core_article.id = core_article_sections.article_id
+        FROM core_article_sections
         GROUP BY article_id
         HAVING COUNT(*) > 1
 ) as foo;
 
 -- Get the ones filed in the highest number of sections
 SELECT article_id, COUNT(*)
+FROM core_article_sections
+GROUP BY article_id
+HAVING COUNT(*) > 1
+ORDER BY COUNT(*) DESC;
+
+--
+SELECT section_id, COUNT(*)
 FROM core_article
 JOIN core_article_sections
 ON core_article.id = core_article_sections.article_id
