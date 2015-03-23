@@ -12,7 +12,7 @@ So our quantitative research methods group got to wondering: What might all thes
 Set up
 ------
 
-We needed to put all relevant and potentially interesting data into a single database in order to run queries and statistical procedures. My personal preference is to use [PostgreSQL](http://www.postgresql.org/). If you're trying follow along while using a different database manager (e.g., [MySQL](http://www.mysql.com/), [SQL Server](http://www.microsoft.com/en-us/server-cloud/products/sql-server/), etc.), then you'll need may need to account for some syntactical of functional differences. That's on you.
+We needed to put all relevant and potentially interesting data into a single database in order to run queries and statistical procedures. My personal preference is to use [PostgreSQL](http://www.postgresql.org/). If you're trying follow along while using a different database manager (e.g., [MySQL](http://www.mysql.com/), [SQL Server](http://www.microsoft.com/en-us/server-cloud/products/sql-server/), etc.), then you'll need to account for some syntactical of functional differences on your own.
 
 But really though: This is a speculative research project focused on a small city paper conducted by a bunch of novices. For a class. I'm not anticipating a lot of followers.
 
