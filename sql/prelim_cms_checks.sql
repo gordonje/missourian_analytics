@@ -52,11 +52,10 @@ GROUP BY article_id
 HAVING COUNT(*) > 1
 ORDER BY COUNT(*) DESC;
 
---
-SELECT section_id, COUNT(*)
-FROM core_article
-JOIN core_article_sections
-ON core_article.id = core_article_sections.article_id
-GROUP BY article_id
-HAVING COUNT(*) > 1
+-- Get the proportions of articles filed in each section
+SELECT section_id, hed, COUNT(*), COUNT(*) / (SELECT COUNT(*) FROM core_article) as pct
+FROM core_article_sections
+JOIN core_section
+ON core_section.id = section_id
+GROUP BY 1, 2
 ORDER BY COUNT(*) DESC;
