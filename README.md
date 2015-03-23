@@ -106,7 +106,7 @@ So now we can grab the goods and head back over to Postgres:
 Data caveats
 ------------
 
-Your data are never as complete they might seem at first glance, and you've got to be honest with yourself (and your audience) regarding what exactly is accounted for and what's missing. The "known unknowns", if you care to get all epistemological about it.
+Your data are never as complete they seem at first glance, and you've got to be honest with yourself (and your audience) regarding what exactly is accounted for and what's missing. The "known unknowns", if you care to get all epistemological about it.
 
 For example, the Social Flow message report data is not at all a complete picture of the attention Missourian articles have garnered on Facebook and Twitter. Rather, it merely accounts for how much attention was paid to posts on the Missourian's official Facebook and Twitter accounts, which are run by the Missourian's social engagement team. No doubt there are plenty of other folks promoting Missourian content via their personal Facebook and Twitter accounts: Reporters, editors and photographers sharing their own work and their co-workers' work as well as audience members who may share links to whatever content they like. 
 
