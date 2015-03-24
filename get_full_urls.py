@@ -42,9 +42,9 @@ with psycopg2.connect(conn_string) as conn:
 
 for url in urls:
 
-	sleep(2)
-
 	print '    Short URL: {}'.format(url)
+	
+	sleep(2)
 
 	try:
 		# try getting full_url from headers_location
@@ -67,7 +67,7 @@ for url in urls:
 
 			response = requests.head(url, allow_redirects = True)
 
-			print 'Full URL: {}'.format(response.url)
+			print '    Full URL: {}'.format(response.url)
 
 			with psycopg2.connect(conn_string) as conn:
 				with conn.cursor() as cur:
@@ -77,6 +77,8 @@ for url in urls:
 
 	except requests.exceptions.InvalidURL:
 		print '    Bad URL'
+
+	print '------------------'
 
 print "fin."
 print '(Runtime = {0})'.format(datetime.now() - start_time)
