@@ -44,7 +44,7 @@ for url in urls:
 
 	sleep(2)
 
-	print '    Short URL {}'.format(url)
+	print '    Short URL: {}'.format(url)
 
 	try:
 		# try getting full_url from headers_location
@@ -52,7 +52,7 @@ for url in urls:
 
 		if urlparse(header_location).netloc == 'columbiamissourian.com':
 
-			print 'Full URL: {}'.format(header_location)
+			print '    Full URL: {}'.format(header_location)
 
 			with psycopg2.connect(conn_string) as conn:
 				with conn.cursor() as cur:
