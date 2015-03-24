@@ -69,21 +69,23 @@ for url in urls:
 
 				sleep(2)
 
-				response = requests.head(url, allow_redirects = True)
+				try:
+					response = requests.head(url, allow_redirects = True)
+					print '    Full URL: {}'.format(response.url)
 
-				print '    Full URL: {}'.format(response.url)
-
-				with psycopg2.connect(conn_string) as conn:
-					with conn.cursor() as cur:
-						cur.execute('''INSERT INTO short_to_full_urls (short_url, full_url)
-										VALUES (%s, %s);''', (url, response.url)
-									)
+					with psycopg2.connect(conn_string) as conn:
+						with conn.cursor() as cur:
+							cur.execute('''INSERT INTO short_to_full_urls (short_url, full_url)
+											VALUES (%s, %s);''', (url, response.url)
+										)
+				except requests.exceptions.ConnectionError as conn_error:
+					print conn_error
 
 		except KeyError:
 			print '    Bad URL'
 
-	except requests.exceptions.InvalidURL:
-		print '    Bad URL'
+	except requests.exceptions.InvalidURL as url_error:
+		print url_error
 
 	print '------------------'
 
