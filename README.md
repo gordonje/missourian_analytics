@@ -136,9 +136,18 @@ The **a** in the previous URL indicates that the link points to an article, repr
 
 But there's a major problem: [60 percent](https://github.com/gordonje/missourian_analytics/blob/master/sql/check_links.sql) of URLs found in the Missourian's Social Flow messages aren't direct links to columbiamissourian.com, but rather URLs shortened via services like [bit.ly](https://bitly.com/).
 
-Are we going to let a snag like this stand in the way of our important, ground-breaking research? Hell no! So we wrote a [Python script]() that requests each shortened URL and collects the full_url to which it re-directs. 
+Are we going to let a snag like this stand in the way of our important, ground-breaking research? Hell no! So we wrote a [Python script](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py) that requests each shortened URL and collects the full_url to which it re-directs. 
 
 First, we need to install some Python libraries to help us get the job done. If you're using a Mac, you might want to follow best practices and set up virtual environment (I use [virtualenv](https://virtualenv.pypa.io/en/latest/) along with [virtualenvwrapper](https://virtualenvwrapper.readthedocs.org/en/latest/)). Then `pip install requests` (for handling HTTP requests) and `pip install psycog2` (for connecting to our Postgres database).
+
+Here's how get_full_urls.py works:
+
+1.	Connects to whichever database you specify.
+2.	Create the `short_to_full_urls` table.
+3.	Select the distinct shortened URLs and append them to a pre-defined variable.
+4.	For each shortened URLs, try making a request without a re-direct and see if we can get the full url out of the response headers.
+5.	We then have to check to see if the full URL actually includes the network location 'columbiamissourian.com'. And if so, we save that short-to-full URL mapping. 
+6.	But it turns out that a lot of these bit.ly URLs just point to other shortened trib.al URLs. Which is...really odd. Anyway, when that happens, we make another request, this time with re-directs enabled. Then we save whichever URL we're re-directed to.
 
 Data caveats
 ------------
