@@ -142,12 +142,12 @@ First, we need to install some Python libraries to help us get the job done. If 
 
 Here's how get_full_urls.py works:
 
-1.	Connects to whichever database you specify.
+1.	Set up [database connection parameters](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L12-L28).
 2.	Create the `short_to_full_urls` table.
-3.	Select the distinct shortened URLs and append them to a pre-defined variable.
-4.	For each shortened URLs, try making a request without a re-direct and see if we can get the full url out of the response headers.
-5.	We then have to check to see if the full URL actually includes the network location 'columbiamissourian.com'. And if so, we save that short-to-full URL mapping. 
-6.	But it turns out that a lot of these bit.ly URLs just point to other shortened trib.al URLs. Which is...really odd. Anyway, when that happens, we make another request, this time with re-directs enabled. Then we save whichever URL we're re-directed to.
+3.	[Select](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L37) the distinct shortened URLs and [append each one](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L39-L41) to a pre-defined variable.
+4.	For each shortened URLs, try making a [request without a re-direct](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L51) and see if we can get the full url out of the response headers.
+5.	We then have to [check](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L53) to see if the full URL actually includes the network location 'columbiamissourian.com'. And if so, we [save](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L57-L61) that short-to-full URL mapping. 
+6.	But it turns out that a lot of these bit.ly URLs just point to other shortened trib.al URLs. Which is...really odd. Anyway, when that happens, we [make another request](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L68), this time with re-directs enabled. Then we [save](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L72-L76) whichever URL we're re-directed to.
 
 Data caveats
 ------------
