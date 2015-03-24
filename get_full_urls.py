@@ -48,32 +48,39 @@ for url in urls:
 
 	try:
 		# try getting full_url from headers_location
-		header_location = requests.head(url).headers['location']
+		response = requests.head(url)
 
-		if urlparse(header_location).netloc == 'columbiamissourian.com':
+		try:
+			
+			header_location = response.headers['location']
 
-			print '    Full URL: {}'.format(header_location)
+			if urlparse(header_location).netloc == 'columbiamissourian.com':
 
-			with psycopg2.connect(conn_string) as conn:
-				with conn.cursor() as cur:
-					cur.execute('''INSERT INTO short_to_full_urls (short_url, full_url)
-									VALUES (%s, %s);''', (url, header_location)
-								)
-		else:
+				print '    Full URL: {}'.format(header_location)
 
-			print '     Trying re-direct...'
+				with psycopg2.connect(conn_string) as conn:
+					with conn.cursor() as cur:
+						cur.execute('''INSERT INTO short_to_full_urls (short_url, full_url)
+										VALUES (%s, %s);''', (url, header_location)
+									)
+			else:
 
-			sleep(2)
+				print '     Trying re-direct...'
 
-			response = requests.head(url, allow_redirects = True)
+				sleep(2)
 
-			print '    Full URL: {}'.format(response.url)
+				response = requests.head(url, allow_redirects = True)
 
-			with psycopg2.connect(conn_string) as conn:
-				with conn.cursor() as cur:
-					cur.execute('''INSERT INTO short_to_full_urls (short_url, full_url)
-									VALUES (%s, %s);''', (url, response.url)
-								)
+				print '    Full URL: {}'.format(response.url)
+
+				with psycopg2.connect(conn_string) as conn:
+					with conn.cursor() as cur:
+						cur.execute('''INSERT INTO short_to_full_urls (short_url, full_url)
+										VALUES (%s, %s);''', (url, response.url)
+									)
+
+		except KeyError:
+			print '    Bad URL'
 
 	except requests.exceptions.InvalidURL:
 		print '    Bad URL'
