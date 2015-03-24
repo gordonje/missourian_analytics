@@ -149,6 +149,8 @@ Here's how get_full_urls.py works:
 5.	We then have to [check](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L53) to see if the full URL actually includes the network location 'columbiamissourian.com'. And if so, we [save](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L57-L61) that short-to-full URL mapping. 
 6.	But it turns out that a lot of these bit.ly URLs just point to other shortened trib.al URLs. Which is...really odd. Anyway, when that happens, we [make another request](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L68), this time with re-directs enabled. Then we [save](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L72-L76) whichever URL we're re-directed to.
 
+In order to avoid making any web servers angry, we added [a couple](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L45) [of delays](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L66) before each request. And when we're making like 20k requests, that means the script **has to run for 10 to 20 hours**. 
+
 Data caveats
 ------------
 
