@@ -147,12 +147,12 @@ Here's how get_full_urls.py works:
 3.	[Select](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L37) the distinct shortened URLs and [append each one](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L39-L41) to a pre-defined variable.
 4.	For each shortened URL, make a HEAD request, and check if the URL in the response's header includes the domain of a URL-shortening service (i.e., bit.ly, trib.al, ow.ly, t.co). If not, try again with URL from the response's header.
 
-	This is necessary because, as it turns out, a lot of these shortened URLs point to URLs shortened by other services. For example, you'll see a bit.ly URL that re-directs to a trib.al URL which then re-directs to columbiamissourian.com page. Which is...really odd. Even weirder, sometimes the second URL re-directs to *yet another* shortened URL. We've found re-direct chains with as many as 5 shortened URLs---bit.ly to trib.al to t.co to bit.ly URL to a different trib.al URL---before eventually landing on a columbiamissourian.com page.
+	This is necessary because, as it turns out, a lot of these shortened URLs point to URLs shortened by other services. For example, you'll see a bit.ly URL that re-directs to a trib.al URL which then re-directs to columbiamissourian.com page. Which is...really odd. Even weirder, sometimes the second URL re-directs to *yet another* shortened URL. We've found re-direct chains with as many as 5 shortened URLs---bit.ly to trib.al to t.co to *yet another* bit.ly URL to *yet another* trib.al URL---before eventually landing on a columbiamissourian.com page.
 	
 	Not sure what that's all about.
-5.	We then save first URL 
+5.	We then save whichever non-shortened-URL we find, along with the URL components and the number of re-directs.
 
-It's great that we can get away with making only HEAD requests because this type of request doesn't include all of the content of the more common GET request. Which mean this script can run a little faster than most scrapers. But for the sake of being extra kind to the web servers, we added a 1.5 second delay between requests. Since we're making 20k requests, the script **has to run for 10 to 20 hours**. 
+It's great that we can get away with making only HEAD requests because they don't include all of the content we which comes with a GET request. Which mean this script can run a little faster than a typical scraper. But for the sake of being extra kind to the web servers, we added a 1.5 second delay between requests. Since we're making 20k requests, the script **has to run for 10 to 20 hours**. 
 
 Data caveats
 ------------

@@ -30,12 +30,6 @@ def get_full_url (url, num_redirects = 1):
 					num_redirects += 1
 					return get_full_url(header_location, num_redirects)
 
-			except requests.exceptions.ConnectionError as conn_error:
-				print conn_error
-			
-			except requests.exceptions.Timeout as timeout_error:
-				print timeout_error
-
 			except KeyError:
 				print '    No re-direct.'
 				return {'full_url': header_location, 'num_redirects': num_redirects}
@@ -45,6 +39,12 @@ def get_full_url (url, num_redirects = 1):
 
 	except requests.exceptions.MissingSchema as schema_error:
 		print schema_error
+
+	except requests.exceptions.ConnectionError as conn_error:
+		print conn_error
+	
+	except requests.exceptions.Timeout as timeout_error:
+		print timeout_error
 
 
 start_time = datetime.now()
