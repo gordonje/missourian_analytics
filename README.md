@@ -149,9 +149,7 @@ Here's how get_full_urls.py works:
 	*	[Make a HEAD request](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L14)
 	*	As long as requests doesn't throw one of several [exceptions](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L37-L47) or we don't get a [bad status code](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L16-L19), then we get the [re-direct location](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L22-L23) out of the response's header.
 	*	If the re-direct URL [doesn't include](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L25-L26) the domain of a URL-shortening service (i.e., bit.ly, trib.al, ow.ly, t.co), then we return that URL along with the number of re-directs. [Otherwise](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L28-L31), we call get_full_url() again, this time with the re-direct URL.
-
 		This is necessary because, as it turns out, a lot of these shortened URLs point to URLs shortened by other services. For example, you'll see a bit.ly URL that re-directs to a trib.al URL which then re-directs to columbiamissourian.com page. Which is...really odd. Even weirder, sometimes the second URL re-directs to *yet another* shortened URL. We've found re-direct chains with as many as 5 shortened URLs---bit.ly to trib.al to t.co to *yet another* bit.ly URL to *yet another* trib.al URL---before eventually landing on a columbiamissourian.com page.
-		
 		Not sure what that's all about.
 5.	We then [save](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L108-L133) whichever non-shortened-URL we find, along with the URL components and the number of re-directs.
 
