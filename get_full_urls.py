@@ -23,13 +23,7 @@ def get_full_url (url):
 			try:
 				header_location = response.headers['location']
 
-				# if urlparse(header_location).netloc in [
-				# 		  'www.columbiamissourian.com'
-				# 		, 'columbiamissourian.com'
-				# 		, 'www.voxmagazine.com'
-				# 		, 'voxmagazine.com'
-				# 	]:
-				if urlparse(header_location).netloc not in ['bit.ly', 'trib.al', 'ow.ly']:
+				if urlparse(header_location).netloc not in ['bit.ly', 'trib.al', 'ow.ly', 't.co']:
 					return header_location
 
 				else:
@@ -88,6 +82,7 @@ with psycopg2.connect(conn_string) as conn:
 
 			urls.append(url[0])
 
+print '{} short URLs to lengthen...'
 
 with requests.session() as session:
 
