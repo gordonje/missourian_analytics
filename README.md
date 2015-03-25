@@ -146,6 +146,7 @@ Here's how get_full_urls.py works:
 2.	Create the `short_to_full_urls` table.
 3.	[Select](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L37) the distinct shortened URLs and [append each one](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L39-L41) to a pre-defined variable.
 4.	For each shortened URLs, make a HEAD request, and check if the URL in the response header includes 'www.columbiamissourian.com'. If not, try again with URL from the response header.
+
 	This is necessary because, as it turns out, a lot of these bit.ly URLs point to other shortened trib.al URLs which then point to columbiamissourian.com URLs. Which is...really odd. Even weirder: Some bit.ly URLs point to a trib.al URLs which then point a different bit.ly URLs, which then finally points to a columbiamissourian.com URL. I've seen a chain of up to five shortened URLs that eventually point to a columbiamissourian.com URL.
 	
 	Not sure what that's all about.
