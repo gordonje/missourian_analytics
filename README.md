@@ -143,15 +143,20 @@ First, we need to install some Python libraries to help us get the job done. If 
 Here's how get_full_urls.py works:
 
 1.	Set up [database connection parameters](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L54-L70).
+
 2.	[Create](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L78) the `short_to_full_urls` table (if it doesn't already exist).
+
 3.	[Select](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L80) the distinct shortened URLs and [append each one](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L39-L41) to a pre-defined variable.
+
 4.	For each shortened URL, call [get_full_url()](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L100), which is a recursive function that does the following:
-	*	[Make a HEAD request](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L14)
+	*	[Make a HEAD request](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L14).
+
 	*	As long as requests doesn't throw one of several [exceptions](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L37-L47) or we don't get a [bad status code](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L16-L19), then we get the [re-direct location](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L22-L23) out of the response's header.
+	
 	*	If the re-direct URL [doesn't include](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L25-L26) the domain of a URL-shortening service (i.e., bit.ly, trib.al, ow.ly, t.co), then we return that URL along with the number of re-directs. [Otherwise](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L28-L31), we call get_full_url() again, this time with the re-direct URL.
 
 		This is necessary because, as it turns out, a lot of these shortened URLs point to URLs shortened by other services. For example, you'll see a bit.ly URL that re-directs to a trib.al URL which then re-directs to columbiamissourian.com page. Which is...really odd. Even weirder, sometimes the second URL re-directs to *yet another* shortened URL. We've found re-direct chains with as many as 5 shortened URLs---bit.ly to trib.al to t.co to *yet another* bit.ly URL to *yet another* trib.al URL---before eventually landing on a columbiamissourian.com page.
-		
+
 		Not sure what that's all about.
 5.	We then [save](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L108-L133) whichever non-shortened-URL we find, along with the URL components and the number of re-directs.
 
