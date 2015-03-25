@@ -31,8 +31,8 @@ def get_full_url (url, num_redirects = 1):
 					return get_full_url(header_location, num_redirects)
 
 			except KeyError:
-				print '    No re-direct.'
-				return {'full_url': header_location, 'num_redirects': num_redirects}
+				print '    No more re-directs.'
+				return {'full_url': url, 'num_redirects': num_redirects}
 
 	except requests.exceptions.InvalidURL as url_error:
 		print url_error
