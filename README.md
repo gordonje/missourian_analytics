@@ -5,14 +5,14 @@ Exploring and researching the Columbia Missourian's website analytics, social me
 Intro
 -----
 
-The [Columbia Missourian](http://www.columbiamissourian.com/) has a lot of data about itself: Data about the traffic on its web pages, data about the attention posts are getting on Facebook and Twitter, and of course columbiamissourian.com sits atop a content management system (CMS) that stores every version of every article its ever published to the web.
+The [Columbia Missourian](http://www.columbiamissourian.com/) has a lot of data about itself: Data about the traffic on its web pages, data about the attention its posts are getting on Facebook and Twitter, and of course columbiamissourian.com sits atop a content management system (CMS) with a database that stores every version of every article its ever published to the web.
 
 So our quantitative research methods group got to wondering: What might all these data tell us? Granted, it's not exactly a laser-focused research question. Then again, if you're trying to figure what research is both relevant and feasible, gathering together and exploring related data sets is as good place as any to start.
 
 Set up
 ------
 
-We needed to put all relevant and potentially interesting data into a single database in order to run queries and statistical procedures. My personal preference is to use [PostgreSQL](http://www.postgresql.org/). If you're trying follow along while using a different database manager (e.g., [MySQL](http://www.mysql.com/), [SQL Server](http://www.microsoft.com/en-us/server-cloud/products/sql-server/), etc.), then you'll need to account for some syntactical of functional differences on your own.
+We needed to put all relevant and potentially interesting data into a single database in order to run queries and statistical procedures. My personal preference is to use [PostgreSQL](http://www.postgresql.org/). If you're following along while using a different database manager (e.g., [MySQL](http://www.mysql.com/), [SQL Server](http://www.microsoft.com/en-us/server-cloud/products/sql-server/), etc.), then you'll need to account for some syntactical of functional differences on your own.
 
 But really though: This is a speculative research project focused on a small city paper conducted by a bunch of novices. For a class. I'm not anticipating a lot of followers.
 
@@ -72,7 +72,7 @@ Thankfully, the Missourian was also nice enough to give us a copy of their CMS d
 
 This CMS is built in [Django](https://www.djangoproject.com/) with a a MySQL backend. Attempts to import the .sql file directly into Postgres failed miserably (not all that shocking), so we had to do a little extra work. Still worth it so as to get to pull things together into Postgres.
 
-So we have to spin up a MySQL server. If you don't already have MySQL, Mac folks, again use Homebrew (everyone else figure it out). And even if you already have MySQL, you should first make sure everything is up-to-date. Run `brew doctor` then `brew update` then `brew upgrade mysql`. You might need to run this last command more than once, as I did, in order to get to the latest version.
+We have to spin up a MySQL server. If you don't already have MySQL, Mac folks, again use Homebrew (everyone else figure it out). And even if you already have MySQL, you should first make sure everything is up-to-date. Run `brew doctor` then `brew update` then `brew upgrade mysql`. You might need to run this last command more than once, as I did, in order to get to the latest version.
 
 Then you need to start the MySQL server. Though, this step gave us a bit of trouble:
 
@@ -145,14 +145,14 @@ Here's how get_full_urls.py works:
 1.	Set up [database connection parameters](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L12-L28).
 2.	Create the `short_to_full_urls` table.
 3.	[Select](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L37) the distinct shortened URLs and [append each one](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L39-L41) to a pre-defined variable.
-4.	For each shortened URLs, make a HEAD request, and check if the URL in the response header includes 'www.columbiamissourian.com'. If not, try again with URL from the response header.
+4.	For each shortened URL, make a HEAD request, and check if the URL in the response's header includes the domain of a URL-shortening service (i.e., bit.ly, trib.al, ow.ly, t.co). If not, try again with URL from the response's header.
 
-	This is necessary because, as it turns out, a lot of these bit.ly URLs point to other shortened trib.al URLs which then point to columbiamissourian.com URLs. Which is...really odd. Even weirder: Some bit.ly URLs point to a trib.al URLs which then point a different bit.ly URLs, which then finally points to a columbiamissourian.com URL. I've seen a chain of up to five shortened URLs that eventually point to a columbiamissourian.com URL.
+	This is necessary because, as it turns out, a lot of these shortened URLs point to URLs shortened by other services. For example, you'll see a bit.ly URL that re-directs to a trib.al URL which then re-directs to columbiamissourian.com page. Which is...really odd. Even weirder, sometimes the second URL re-directs to *yet another* shortened URL. We've found re-direct chains with as many as 5 shortened URLs---bit.ly to trib.al to t.co to bit.ly URL to a different trib.al URL---before eventually landing on a columbiamissourian.com page.
 	
 	Not sure what that's all about.
-5.	We then save the full URL once we get it.
+5.	We then save first URL 
 
-In order to avoid making any web servers angry, we added 1.5 second delay between requests. And since we're making 20k requests, the script **has to run for 10 to 20 hours**. 
+It's great that we can get away with making only HEAD requests because this type of request doesn't include all of the content of the more common GET request. Which mean this script can run a little faster than most scrapers. But for the sake of being extra kind to the web servers, we added a 1.5 second delay between requests. Since we're making 20k requests, the script **has to run for 10 to 20 hours**. 
 
 Data caveats
 ------------

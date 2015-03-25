@@ -6,7 +6,7 @@ import requests
 from time import sleep
 from urlparse import urlparse
 
-def get_full_url (url):
+def get_full_url (url, num_redirects = 1):
 
 	sleep(1.5)
 
@@ -17,18 +17,18 @@ def get_full_url (url):
 			print '    404 Error. Not found.'
 		elif response.status_code == 405:
 			print '    405 Error. Method not allowed.'
-
 		else:
 
 			try:
 				header_location = response.headers['location']
 
 				if urlparse(header_location).netloc not in ['bit.ly', 'trib.al', 'ow.ly', 't.co']:
-					return header_location
+					return {'full_url': header_location, 'num_redirects': num_redirects}
 
 				else:
 					print "    Re-directs to {}".format(header_location)
-					return get_full_url(header_location)
+					num_redirects += 1
+					return get_full_url(header_location, num_redirects)
 
 			except requests.exceptions.ConnectionError as conn_error:
 				print conn_error
@@ -37,7 +37,8 @@ def get_full_url (url):
 				print timeout_error
 
 			except KeyError:
-				return url
+				print '    No re-direct.'
+				return {'full_url': header_location, 'num_redirects': num_redirects}
 
 	except requests.exceptions.InvalidURL as url_error:
 		print url_error
@@ -82,7 +83,7 @@ with psycopg2.connect(conn_string) as conn:
 
 			urls.append(url[0])
 
-print '{} short URLs to lengthen...'
+print '{} short URLs to lengthen...'.format(len(urls))
 
 with requests.session() as session:
 
@@ -96,18 +97,19 @@ with requests.session() as session:
 
 		print '    Short URL: {}'.format(url)
 
-		full_url = get_full_url(url)
+		results = get_full_url(url)
 
-		if full_url == None:
+		if results == None:
 			print "    Doesn't re-direct to columbiamissourian.com or voxmagazine.com"
 
 		else:
-			print '    Full URL: {}'.format(full_url)
+			print '    Full URL: {}'.format(results['full_url'])
 
 			with psycopg2.connect(conn_string) as conn:
 				with conn.cursor() as cur:
 					cur.execute('''INSERT INTO short_to_full_urls (
 										  short_url
+										, num_redirects  
 										, full_url
 										, scheme
 										, netloc
@@ -116,10 +118,11 @@ with requests.session() as session:
 										, query
 										, fragment
 									)
-									VALUES (%s, %s, %s, %s, %s, %s, %s, %s);''', 
+									VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);''', 
 									(
 										  url
-										, full_url
+										, results['num_redirects']
+										, results['full_url']
 										, urlparse(url).scheme
 										, urlparse(url).netloc
 										, urlparse(url).path
