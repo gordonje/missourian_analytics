@@ -145,11 +145,13 @@ Here's how get_full_urls.py works:
 1.	Set up [database connection parameters](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L12-L28).
 2.	Create the `short_to_full_urls` table.
 3.	[Select](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L37) the distinct shortened URLs and [append each one](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L39-L41) to a pre-defined variable.
-4.	For each shortened URLs, try making a [request without a re-direct](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L51) and see if we can get the full url out of the response headers.
-5.	We then have to check, first, if the URL from the response header [includes a network location](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L53-L55). If not, we consider it a [bad URL](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L82-L83). Then we check to see if the response header URL actually [includes the network location 'columbiamissourian.com'](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L57). If so, we [save](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L61-L65) that short-to-full URL mapping.
-6.	But it turns out that a lot of these bit.ly URLs just point to other shortened trib.al URLs. Which is...really odd. Anyway, when that happens, we [make another request](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L68), this time with re-directs enabled. Then we [save](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L72-L76) whichever URL we're re-directed to.
+4.	For each shortened URLs, make a HEAD request, and check if the URL in the response header includes 'www.columbiamissourian.com'. If not, try again with URL from the response header.
+	This is necessary because, as it turns out, a lot of these bit.ly URLs point to other shortened trib.al URLs which then point to columbiamissourian.com URLs. Which is...really odd. Even weirder: Some bit.ly URLs point to a trib.al URLs which then point a different bit.ly URLs, which then finally points to a columbiamissourian.com URL. I've seen a chain of up to five shortened URLs that eventually point to a columbiamissourian.com URL.
+	
+	Not sure what that's all about.
+5.	We then save the full URL once we get it.
 
-In order to avoid making any web servers angry, we added [a couple](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L45) [of delays](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L66) before each request. And when we're making like 20k requests, that means the script **has to run for 10 to 20 hours**. 
+In order to avoid making any web servers angry, we added 1.5 second delay between requests. And since we're making 20k requests, the script **has to run for 10 to 20 hours**. 
 
 Data caveats
 ------------

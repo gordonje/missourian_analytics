@@ -6,8 +6,39 @@ import requests
 from time import sleep
 from urlparse import urlparse
 
+def get_full_url (url):
+
+	sleep(1.5)
+
+	try:
+		response = requests.head(url)
+
+		try:
+			header_location = response.headers['location']
+
+			if urlparse(header_location).netloc == 'www.columbiamissourian.com':
+				return header_location
+
+			else:
+				print "    {} isn't right. Trying re-direct...".format(header_location)
+				return get_full_url(header_location)
+
+		except requests.exceptions.ConnectionError as conn_error:
+			print conn_error
+		
+		except requests.exceptions.Timeout as timeout_error:
+			print timeout_error
+
+		except KeyError:
+			print '    Bad URL'
+
+	except requests.exceptions.InvalidURL as url_error:
+		print url_error
+
+
 start_time = datetime.now()
 print 'Started at {}'.format(start_time)
+
 
 # connect to the database, prompt if not provided
 try:
@@ -27,6 +58,7 @@ except IndexError:
 
 conn_string = "dbname=%(db)s user=%(user)s password=%(password)s" % {"db": db, "user": user, "password": password}
 
+
 urls = []
 
 with psycopg2.connect(conn_string) as conn:
@@ -40,54 +72,31 @@ with psycopg2.connect(conn_string) as conn:
 
 			urls.append(url[0])
 
-for url in urls:
 
-	print '    Short URL: {}'.format(url)
-	
-	sleep(2)
+with requests.session() as session:
 
-	try:
-		# try getting full_url from headers_location
-		response = requests.head(url)
+	session.headers.update(
+		{
+			'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
+		}
+	)
 
-		try:
-			
-			header_location = response.headers['location']
+	for url in urls:
 
-			if urlparse(header_location).netloc == 'columbiamissourian.com':
+		print '    Short URL: {}'.format(url)
 
-				print '    Full URL: {}'.format(header_location)
+		full_url = get_full_url(url)
 
-				with psycopg2.connect(conn_string) as conn:
-					with conn.cursor() as cur:
-						cur.execute('''INSERT INTO short_to_full_urls (short_url, full_url)
-										VALUES (%s, %s);''', (url, header_location)
-									)
-			else:
+		print '    Full URL: {}'.format(full_url)
 
-				print '     Trying re-direct...'
+		with psycopg2.connect(conn_string) as conn:
+			with conn.cursor() as cur:
+				cur.execute('''INSERT INTO short_to_full_urls (short_url, full_url)
+								VALUES (%s, %s);''', (url, full_url)
+							)
 
-				sleep(2)
-
-				try:
-					response = requests.head(url, allow_redirects = True)
-					print '    Full URL: {}'.format(response.url)
-
-					with psycopg2.connect(conn_string) as conn:
-						with conn.cursor() as cur:
-							cur.execute('''INSERT INTO short_to_full_urls (short_url, full_url)
-											VALUES (%s, %s);''', (url, response.url)
-										)
-				except requests.exceptions.ConnectionError as conn_error:
-					print conn_error
-
-		except KeyError:
-			print '    Bad URL'
-
-	except requests.exceptions.InvalidURL as url_error:
-		print url_error
-
-	print '------------------'
+		print '------------------'
 
 print "fin."
 print '(Runtime = {0})'.format(datetime.now() - start_time)
+
