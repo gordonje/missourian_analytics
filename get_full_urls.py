@@ -13,27 +13,43 @@ def get_full_url (url):
 	try:
 		response = requests.head(url)
 
-		try:
-			header_location = response.headers['location']
+		if response.status_code == 404:
+			print '    404 Error. Not found.'
+		elif response.status_code == 405:
+			print '    405 Error. Method not allowed.'
 
-			if urlparse(header_location).netloc in ['www.columbiamissourian.com', 'columbiamissourian.com']:
-				return header_location
+		else:
 
-			else:
-				print "    {} isn't right. Trying re-direct...".format(header_location)
-				return get_full_url(header_location)
+			try:
+				header_location = response.headers['location']
 
-		except requests.exceptions.ConnectionError as conn_error:
-			print conn_error
-		
-		except requests.exceptions.Timeout as timeout_error:
-			print timeout_error
+				# if urlparse(header_location).netloc in [
+				# 		  'www.columbiamissourian.com'
+				# 		, 'columbiamissourian.com'
+				# 		, 'www.voxmagazine.com'
+				# 		, 'voxmagazine.com'
+				# 	]:
+				if urlparse(header_location).netloc not in ['bit.ly', 'trib.al', 'ow.ly']:
+					return header_location
 
-		except KeyError:
-			print '    Bad URL'
+				else:
+					print "    Re-directs to {}".format(header_location)
+					return get_full_url(header_location)
+
+			except requests.exceptions.ConnectionError as conn_error:
+				print conn_error
+			
+			except requests.exceptions.Timeout as timeout_error:
+				print timeout_error
+
+			except KeyError:
+				return url
 
 	except requests.exceptions.InvalidURL as url_error:
 		print url_error
+
+	except requests.exceptions.MissingSchema as schema_error:
+		print schema_error
 
 
 start_time = datetime.now()
@@ -87,13 +103,36 @@ with requests.session() as session:
 
 		full_url = get_full_url(url)
 
-		print '    Full URL: {}'.format(full_url)
+		if full_url == None:
+			print "    Doesn't re-direct to columbiamissourian.com or voxmagazine.com"
 
-		with psycopg2.connect(conn_string) as conn:
-			with conn.cursor() as cur:
-				cur.execute('''INSERT INTO short_to_full_urls (short_url, full_url)
-								VALUES (%s, %s);''', (url, full_url)
-							)
+		else:
+			print '    Full URL: {}'.format(full_url)
+
+			with psycopg2.connect(conn_string) as conn:
+				with conn.cursor() as cur:
+					cur.execute('''INSERT INTO short_to_full_urls (
+										  short_url
+										, full_url
+										, scheme
+										, netloc
+										, url_path
+										, params
+										, query
+										, fragment
+									)
+									VALUES (%s, %s, %s, %s, %s, %s, %s, %s);''', 
+									(
+										  url
+										, full_url
+										, urlparse(url).scheme
+										, urlparse(url).netloc
+										, urlparse(url).path
+										, urlparse(url).params
+										, urlparse(url).query
+										, urlparse(url).fragment
+									)
+								)
 
 		print '------------------'
 
