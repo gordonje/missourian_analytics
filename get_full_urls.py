@@ -123,12 +123,12 @@ with requests.session() as session:
 										  url
 										, results['num_redirects']
 										, results['full_url']
-										, urlparse(url).scheme
-										, urlparse(url).netloc
-										, urlparse(url).path
-										, urlparse(url).params
-										, urlparse(url).query
-										, urlparse(url).fragment
+										, urlparse(results['full_url']).scheme
+										, urlparse(results['full_url']).netloc
+										, urlparse(results['full_url']).path
+										, urlparse(results['full_url']).params
+										, urlparse(results['full_url']).query
+										, urlparse(results['full_url']).fragment
 									)
 								)
 
