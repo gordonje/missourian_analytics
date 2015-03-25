@@ -16,7 +16,7 @@ def get_full_url (url):
 		try:
 			header_location = response.headers['location']
 
-			if urlparse(header_location).netloc == 'www.columbiamissourian.com':
+			if urlparse(header_location).netloc in ['www.columbiamissourian.com', 'columbiamissourian.com']:
 				return header_location
 
 			else:
