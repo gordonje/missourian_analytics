@@ -8,7 +8,7 @@ from urlparse import urlparse
 
 def get_full_url (url, num_redirects = 1):
 
-	sleep(1.5)
+	sleep(1)
 
 	try:
 		response = requests.head(url)
