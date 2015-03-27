@@ -7,7 +7,7 @@ WHERE (
         OR link LIKE '%trib.al%'
         OR link LIKE '%tribal%'
         OR link LIKE '%ow.ly%'
-        OR link LIKE '%t.co%'
+        OR link LIKE 'http://t.co%'
 )
 AND link NOT IN (SELECT short_url FROM short_to_full_urls)
 ORDER BY link;
