@@ -125,16 +125,12 @@ So now we can grab the goods and head back over to Postgres:
 *	Switch back to Postgres and run [these queries](https://github.com/gordonje/missourian_analytics/blob/master/sql/import_cms_data.sql) in order to import this file into Postgres.
 *	And, for good measure, let's add some [more indexes](https://github.com/gordonje/missourian_analytics/blob/master/sql/index_articles_sections.sql).
 
-Joining Social Flow and CMS data
---------------------------------
+URL Lengthening
+---------------
 
 The links included in the Facebook and Twitter posts, of course, point to Missourian content. That's how we can figure out how much social media attention each individual piece of content received.
 
-In many cases, the Missourian is promoting a specific article. And luckily the article_id and slug from the CMS are embedded in the URL to article. So for http://www.columbiamissourian.com/a/145793/temporary-lane-closure-on-eighth-street-begins-monday/, the article_id is **145793** and the slug is **temporary-lane-closure-on-eighth-street-begins-monday**. 
-
-The **a** in the previous URL indicates that the link points to an article, represented in the CMS as a `core_article` row. In the same position in the URL, a **p** would point instead toward a specific page (a `core_page` row), for example, http://www.columbiamissourian.com/p/2012-primary-election/.
-
-But there's a major problem: [60 percent](https://github.com/gordonje/missourian_analytics/blob/master/sql/check_links.sql) of URLs found in the Missourian's Social Flow messages aren't direct links to columbiamissourian.com, but rather URLs shortened via services like [bit.ly](https://bitly.com/).
+But there's a major problem: [60 percent](https://github.com/gordonje/missourian_analytics/blob/master/sql/check_links.sql) of URLs found in the Missourian's Social Flow messages aren't direct links to columbiamissourian.com. Most of these are URLs shortened via services like [bit.ly](https://bitly.com/).
 
 Are we going to let a snag like this stand in the way of our important, ground-breaking research? Hell no! So we wrote a [Python script](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py) that requests each shortened URL and collects the full_url to which it re-directs. 
 
@@ -155,12 +151,32 @@ Here's how get_full_urls.py works:
 
 	*	If the re-direct URL [doesn't include](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L25-L26) the domain of a URL-shortening service (i.e., bit.ly, trib.al, ow.ly, t.co), then we return that URL along with the number of re-directs. [Otherwise](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L28-L31), we call get_full_url() again, this time with the re-direct URL.
 
-		This is necessary because, as it turns out, a lot of these shortened URLs point to URLs shortened by other services. For example, you'll see a bit.ly URL that re-directs to a trib.al URL which then re-directs to columbiamissourian.com page. Which is...really odd. Even weirder, sometimes the second URL re-directs to *yet another* shortened URL. We've found re-direct chains with as many as eight shortened URLs---bit.ly to trib.al to *yet another* bit.ly URL to *yet another* trib.al URL and back and forth again---before eventually landing on a columbiamissourian.com page.
+		This is necessary because, as it turns out, a lot of these shortened URLs point to other shortened URLs. For example, you'll see a bit.ly URL that re-directs to a trib.al URL which then re-directs to columbiamissourian.com page. Which is...really odd. Even weirder, sometimes the second URL re-directs to *yet another* shortened URL. We've found re-direct chains with as many as *eight shortened URLs*---bit.ly to trib.al to *yet another* bit.ly URL to *yet another* trib.al URL and back and forth again---before eventually landing on a columbiamissourian.com page.
 
 		Not sure what that's all about.
-5.	We then [save](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L108-L133) whichever non-shortened-URL we find, along with the URL components and the number of re-directs.
+5.	Finally, we [save](https://github.com/gordonje/missourian_analytics/blob/master/get_full_urls.py#L108-L133) whichever non-shortened-URL we find, along with the URL components and the number of re-directs.
 
-It's great that we can get away with making only HEAD requests because they don't include all of the content we which comes with a GET request. Which mean this script can run a little faster than a typical scraper. But for the sake of being extra kind to the web servers, we added a 1.5 second delay between requests. Since we're making 20k requests, the script **has to run for 10 to 20 hours**. 
+It's great that we can get away with making only HEAD requests because they don't include all of the content which comes with a GET request. Which means this script can run a little faster than a typical scraper. But for the sake of being extra kind to the web servers, we added a one second delay between requests. Since we're requesting roughly 20k URLs with an average of two re-directs for each, **the script has to run for 11 to 12 hours**. 
+
+Once we have all of the full URLs, we need line them up next to each message that points contains. Remember the `messages_links` table? We [add]() a few more columns to that and [populate them with the data we've just scraped](). But don't forget about all those links that were never shortened in the first place. For these we wrote [parse_urls.py]() which, as the name suggests, parses each URL into its components (e.g., the network location and path).
+
+All Together Now
+----------------
+
+We how have the full URL of each link included in each Missourian social media post. What comes next is lining these records up with each artcile from the CMS. And luckily the article_id and slug from the CMS are embedded in the URL to article. So for http://www.columbiamissourian.com/a/145793/temporary-lane-closure-on-eighth-street-begins-monday/, the article_id is **145793** and the slug is **temporary-lane-closure-on-eighth-street-begins-monday**. 
+
+The **a** in the previous URL indicates that the link points to an article, represented in the CMS as a `core_article` row. In the same position in the URL, a **p** would point instead toward a specific page (a `core_page` row), for example, http://www.columbiamissourian.com/p/2012-primary-election/.
+
+At this point, we're deciding to focus solely on the articles since these are the most prevalent content types the Missourian shares on social media and seemingly the only type that is classifed into sections.
+
+So now we will [add](https://github.com/gordonje/missourian_analytics/blob/master/sql/add_and_set_a_ids.sql#L2-L4) an `article_id` field and [populate](https://github.com/gordonje/missourian_analytics/blob/master/sql/add_and_set_a_ids.sql#L6-L9) it for all links that contain '/a/'. 
+
+By this point, you might have noticed another URL format, where the path begins with '/stories/'. These are links to artciles as well, but do not include the article_id. 
+
+Ugh. But let's keep on trucking. We can use the slug and date portions of the URL path as join criteria [like so](https://github.com/gordonje/missourian_analytics/blob/master/sql/set_article_ids_for_stories.sql).
+
+We now have [11,494 distinct articles](https://github.com/gordonje/missourian_analytics/blob/master/sql/message_links_articles_checks.sql#L7-L9) shared in [18,999 distinct messages](https://github.com/gordonje/missourian_analytics/blob/master/sql/message_links_articles_checks.sql#L11-L14). Each article was [shared an average of 2.84 times](https://github.com/gordonje/missourian_analytics/blob/master/sql/message_links_articles_checks.sql#L16-L23).
+
 
 Data caveats
 ------------
