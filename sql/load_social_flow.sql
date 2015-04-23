@@ -30,4 +30,9 @@ ADD PRIMARY KEY (id);
 -- 4. Drop the original table.
 DROP TABLE social_flow_temp;
 
+-- Remove carriage returns from this field. As they were causing pain
+-- when exporting this data and importing into SPSS
+UPDATE social_flow
+SET message = regexp_replace(message, E'[\\n\\r]+', ' ', 'g' );
+
 
